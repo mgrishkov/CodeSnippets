@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>TempTableGenerator</Title>
+      <Shortcut>TempTableGenerator</Shortcut>
+      <Description>Generate temp table bfor SP</Description>
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>OBJECT_NAME</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[declare @pFullObjectName varchar(256) = '[I.ACS].CardholderList';
+
+
+declare @objectID  int            = object_id(@pFullObjectName)
+      , @objectName varchar(256)
+      , @result     nvarchar(max) = '';
+
+select @objectName = ao.name
+  from sys.all_objects ao
+ where ao.object_id = @objectID;
+
+with qMetaData
+  as (select ColumnName          = t.name
+           , ColumnType          = t.system_type_name
+           , ColumnNameMaxLength = max(len(t.name)) over (partition by 1)
+           , ErrorMessage        = t.error_message
+        from sys.dm_exec_describe_first_result_set_for_object (@objectID, null) t)
+select @result += case when q.ErrorMessage is not null then q.ErrorMessage else case when @result = '' then '      ' else '    , ' end + '[' + q.ColumnName + ']' + replicate(' ', q.ColumnNameMaxLength - len(q.ColumnName) + 1) + q.ColumnType + char(10) end
+  from qMetaData q
+
+
+set @result = 'create table #' + @objectName + char(10)
+            + '('                            + char(10)
+            + @result
+            + ');';
+
+print @result;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

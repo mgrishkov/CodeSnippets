@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>GetSQLServerServiceLogin</Title>
+      <Shortcut>GetSQLServerServiceLogin</Shortcut>
+      <Description>Get SQL Server service login</Description>
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[DECLARE       @DBEngineLogin       VARCHAR(100)
+DECLARE       @AgentLogin          VARCHAR(100)
+ 
+EXECUTE       master.dbo.xp_instance_regread
+              @rootkey      = N'HKEY_LOCAL_MACHINE',
+              @key          = N'SYSTEM\CurrentControlSet\Services\MSSQLServer',
+              @value_name   = N'ObjectName',
+              @value        = @DBEngineLogin OUTPUT
+ 
+EXECUTE       master.dbo.xp_instance_regread
+              @rootkey      = N'HKEY_LOCAL_MACHINE',
+              @key          = N'SYSTEM\CurrentControlSet\Services\SQLServerAgent',
+              @value_name   = N'ObjectName',
+              @value        = @AgentLogin OUTPUT
+ 
+SELECT        [DBEngineLogin] = @DBEngineLogin, [AgentLogin] = @AgentLogin
+GO]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

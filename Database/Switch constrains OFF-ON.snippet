@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Switch constrains OFF-ON</Title>
+      <Shortcut>Switch constrains OFF-ON</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL (Devart)" Kind="MS SQL"><![CDATA[exec sp_msforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"
+go
+
+$CARET$
+
+exec sp_msforeachtable "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"
+go]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

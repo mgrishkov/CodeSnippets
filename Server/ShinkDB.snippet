@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Shrink DB</Title>
+      <Shortcut>ShrinkDB</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>File</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL (Devart)" Kind="MS SQL"><![CDATA[ALTER DATABASE $DB$ SET RECOVERY SIMPLE
+go
+BACKUP LOG $DB$ WITH NO_LOG;
+go
+DBCC SHRINKFILE ($File$, 1)]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

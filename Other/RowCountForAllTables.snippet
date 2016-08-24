@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RowCountForAllTables</Title>
+      <Shortcut>RowCountForAllTables</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[create table #data
+(
+      [TableName] varchar(256)
+    , [RowCount]  int
+)
+
+exec sys.sp_MSForEachTable @command1='insert into #data ([TableName], [RowCount]) select ''?'', count(*) from ?';
+
+select [TableName], [RowCount] 
+  from #data 
+ where 1 = 1
+ order by TableName;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

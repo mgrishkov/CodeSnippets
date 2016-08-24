@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>CheckUsedSpaceByTable</Title>
+      <Shortcut>CheckUsedSpaceByTable</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL (Devart)" Kind="MS SQL"><![CDATA[begin try
+    declare @table_name varchar(500);
+    declare @schema_name varchar(500);
+    declare @tab1 table(
+        tablename varchar(500) collate database_default,
+        schemaname varchar(500) collate database_default
+    );
+    declare @temp_table table(
+        tablename sysname,
+        row_count int,
+        reserved varchar(50) collate database_default,
+        data varchar(50) collate database_default,
+        index_size varchar(50) collate database_default,
+        unused varchar(50) collate database_default
+    );
+
+    insert into @tab1
+        select t1.name,
+               t2.name
+          from sys.tables t1
+               inner join sys.schemas t2
+            on (t1.schema_id = t2.schema_id);
+
+    declare c1 cursor for
+    select t2.name + '.' + t1.name
+      from sys.tables t1
+           inner join sys.schemas t2
+        on (t1.schema_id = t2.schema_id);
+
+    open c1;
+    fetch next from c1 into @table_name;
+    while @@FETCH_STATUS = 0
+    begin
+        set @table_name = replace(@table_name, '[', '');
+        set @table_name = replace(@table_name, ']', '');
+        if exists (select object_id
+                     from sys.objects
+                    where object_id = object_id(@table_name))
+        begin
+            insert into @temp_table exec sp_spaceused @table_name, false;
+        end
+        fetch next from c1 into @table_name;
+    end;
+    close c1;
+    deallocate c1;
+    select t1.tablename as [tablename],
+           t1.row_count as [row_count],
+           cast(replace(t1.reserved, ' KB', '') as int) as [reserved (KB)],
+           cast(replace(t1.data, ' KB', '') as int) as [data (KB)],
+           cast(replace(t1.index_size, ' KB', '') as int) as [index_size (KB)],
+           cast(replace(t1.unused, ' KB', '') as int) as [unused (KB)],
+           t2.schemaname
+      from @temp_table t1
+           inner join @tab1 t2
+        on (t1.tablename = t2.tablename)
+     order by 3 desc
+end try
+begin catch
+    select -100 as l1,
+           error_number() as tablename,
+           error_severity() as row_count,
+           error_state() as reserved,
+           error_message() as data,
+           1 as index_size,
+           1 as unused,
+           1 as schemaname
+end catch]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

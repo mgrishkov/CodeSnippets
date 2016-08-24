@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>RestoreDB</Title>
+      <Shortcut>RestoreDB</Shortcut>
+      <Description>Resore Database</Description>
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[USE master
+go
+
+ALTER DATABASE   [$DB$] SET SINGLE_USER WITH ROLLBACK immediate
+RESTORE DATABASE [$DB$] FROM DISK = N'\\ruspet01-sql-11\BA_Migration\$DB$.bak' WITH REPLACE, MOVE N'$DB$' TO N'D:\DATA\$DB$.mdf', MOVE N'$DB$_log' TO N'D:\DATA\$DB$_log.ldf', STATS = 1;
+alter database   [$DB$] set multi_user
+go]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

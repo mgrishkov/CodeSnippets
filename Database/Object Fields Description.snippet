@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Object Fields Description</Title>
+      <Shortcut>Object Fields Description</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>Schema.ObjectName</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL (Devart)" Kind="MS SQL"><![CDATA[SELECT c.name as [Name], 
+       t.name + case when c.system_type_id in (165, 167, 173, 175, 231, 239)
+                     then '(' + cast(c.max_length as varchar) + ')' 
+                     when c.system_type_id in (106)
+                     then '(' + cast(c.max_length as varchar) + ', ' + cast(c.precision as varchar) + ')'
+                     else '' 
+                end as [Data type], 
+       case when c.is_nullable = 1 
+            then 'null'
+            else 'not null'
+       end as Nullable
+FROM sys.columns c
+    inner join sys.types t
+  on (t.system_type_id = c.system_type_id)
+WHERE object_id=object_id($Schema.ObjectName$)]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

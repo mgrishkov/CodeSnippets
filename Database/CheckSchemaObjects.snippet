@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>CheckSchemaObjects</Title>
+      <Shortcut>CheckSchemaObjects</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>SCHEMA</ID>
+          <Default>dbo</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL (Devart)" Kind="MS SQL"><![CDATA[declare @ObjectName varchar(max),
+        @ObjectID int,
+        @ObjectDefinition nvarchar(max),
+        @SchemaName varchar(max);
+-- название проверяемой схемы
+set @SchemaName = 'VAC';
+
+declare @t_log table
+(
+    SchemaObject varchar(max),
+    CheckResult varchar(max),
+    ObjectDefinition nvarchar(max)
+);
+declare c_objects cursor 
+    for select t.object_id,
+               '[' + cast(s.name as varchar(max)) + '].[' + cast(t.name as varchar(max)) + ']'
+          from sys.objects t
+               inner join sys.schemas s
+            on (t.[schema_id] = s.[schema_id])
+         where t.[type] in ('P', 'PC', 'FN', 'FS ', 'FT', 'TF', 'V')
+           and s.[name] like @SchemaName;
+open c_objects;
+fetch next from c_objects
+    into @ObjectID, @ObjectName;
+while @@fetch_status = 0
+begin
+    begin try
+        begin transaction
+        EXEC sys.sp_refreshsqlmodule @ObjectName;
+        rollback transaction
+        insert into @t_log 
+            (SchemaObject, CheckResult, ObjectDefinition)
+        values 
+            (@ObjectName, 'OK', null); 
+    end try
+    begin catch
+        if xact_state() <> 0
+        begin
+          rollback transaction
+        end;
+        set @ObjectDefinition = object_definition(@ObjectID);
+        insert into @t_log 
+            (SchemaObject, CheckResult, ObjectDefinition)
+        values 
+            (@ObjectName, ERROR_MESSAGE(), @ObjectDefinition); 
+    end catch;
+
+    fetch next from c_objects
+        into @ObjectID, @ObjectName;
+end;
+close c_objects;
+deallocate c_objects;
+
+select * from @t_log;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ObjectModifications</Title>
+      <Shortcut>ObjectModifications</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>OBJECT_NAME</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[declare @filename   varchar(255),
+        @objectName varchar(255) = '$OBJECT_NAME$'; 
+
+select @filename = substring(path, 0, len(path) - charindex('\', reverse(path)) + 1) + '\Log.trc'
+  from sys.traces
+ where is_default = 1;
+
+select gt.HostName,
+       gt.ApplicationName,
+       gt.NTUserName,
+       gt.NTDomainName,
+       gt.LoginName,
+       gt.SPID,
+       gt.EventClass,
+       te.Name as EventName,
+       gt.EventSubClass,
+       gt.TEXTData,
+       gt.StartTime,
+       gt.EndTime,
+       gt.ObjectName,
+       gt.DatabaseName,
+       gt.FileName,
+       gt.IsSystem
+  from [fn_trace_gettable](@filename, default) gt
+       inner join sys.trace_events te
+    on gt.EventClass = te.trace_event_id
+ where EventClass in (164)
+   and gt.ObjectName = @objectName
+ order by StartTime desc;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
