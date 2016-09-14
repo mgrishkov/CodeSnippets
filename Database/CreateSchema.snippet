@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>CreateSchema</Title>
+      <Shortcut>CreateSchema</Shortcut>
+      <Description>Create schema</Description>
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>SCHEMA</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[create schema [$SCHEMA$] authorization dbo;
+go
+execute sys.sp_addextendedproperty @name       = N'MS_DescriptionExample'
+                                 , @value      = N''
+                                 , @level0type = N'SCHEMA'
+                                 , @level0name = '$SCHEMA$'; 
+go
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
