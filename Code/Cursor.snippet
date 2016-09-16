@@ -13,46 +13,38 @@
     <Snippet>
       <Declarations>
         <Literal>
-          <ID>variable</ID>
-          <Default>@var1</Default>
+          <ID>variables</ID>
+          <Default>@variable</Default>
         </Literal>
         <Literal>
-          <ID>type</ID>
-          <Default>INT</Default>
-        </Literal>
-        <Literal>
-          <ID>cursor_name</ID>
+          <ID>CursorName</ID>
           <Default>cur</Default>
         </Literal>
         <Literal>
-          <ID>schema</ID>
-          <Default>dbo</Default>
-        </Literal>
-        <Literal>
-          <ID>table_name</ID>
-          <Default>table_name</Default>
+          <ID>CursorQuery</ID>
+          <Default>select * from</Default>
         </Literal>
       </Declarations>
-      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[DECLARE $variable$ $type$
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[declare $variables$;
 
-DECLARE $cursor_name$ CURSOR FAST_FORWARD READ_ONLY LOCAL FOR
-	SELECT *
-	FROM $schema$.$table_name$
+declare $CursorName$ cursor fast_forward
+    for $CursorName$;
+open $CursorName$
 
-OPEN $cursor_name$
+fetch next from $CursorName$
+    into $variables$;
 
-FETCH NEXT FROM $cursor_name$ INTO $variable$
+while (@@fetch_status = 0)
+begin
 
-WHILE @@FETCH_STATUS = 0 BEGIN
+    $CARET$
 
-	$CARET$
+    fetch next from $CursorName$
+     into $variables$;
+end;
 
-	FETCH NEXT FROM $cursor_name$ INTO $variable$
-
-END
-
-CLOSE $cursor_name$
-DEALLOCATE $cursor_name$]]></Code>
+close $CursorName$;
+deallocate $CursorName$';]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

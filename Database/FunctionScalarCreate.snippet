@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>FunctionScalarCreate</Title>
+      <Shortcut>FunctionScalarCreate</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>NAME</ID>
+          <Default> ObjectName</Default>
+        </Literal>
+        <Literal>
+          <ID>SCHEMA</ID>
+          <Default> Schema</Default>
+        </Literal>
+        <Literal>
+          <ID>TYPE</ID>
+          <Default> Type</Default>
+        </Literal>
+        <Literal>
+          <ID>PARAMETERS</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[if (object_id('[$SCHEMA$].[$NAME$]') is not null)
+	drop function [$SCHEMA$].[$NAME$]
+go
+
+create function [$SCHEMA$].[$NAME$]($PARAMETERS$)
+returns $TYPE$
+begin
+	declare @Result $TYPE$;
+
+	$CARET$
+	return @Result;
+end;
+go]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
