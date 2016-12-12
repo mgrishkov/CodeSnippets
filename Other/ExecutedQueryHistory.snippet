@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ExecutedQueryHistory</Title>
+      <Shortcut>ExecutedQueryHistory</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[select [LastExecution] = execquery.last_execution_time
+     , [Script]        = execsql.text
+  from sys.dm_exec_query_stats as execquery
+       cross apply sys.dm_exec_sql_text(execquery.sql_handle) as execsql
+ where execquery.last_execution_time >= '$DATE$ $TIME$'
+ order by execquery.last_execution_time]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
