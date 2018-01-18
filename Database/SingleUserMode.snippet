@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>SingleUserMode</Title>
+      <Shortcut>SingleUserMode</Shortcut>
+      <Description>Set single user mode for db</Description>
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[USE master;
+go
+
+alter database $DB$
+  set single_user
+ with rollback immediate;
+go
+
+$CARET$
+
+alter database $DB$
+  set multi_user;
+go]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
