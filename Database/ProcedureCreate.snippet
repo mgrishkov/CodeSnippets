@@ -20,6 +20,10 @@
           <ID>procedure_name</ID>
           <Default>procedure_name</Default>
         </Literal>
+        <Literal>
+          <ID>role</ID>
+          <Default>ApiRole</Default>
+        </Literal>
       </Declarations>
       <Code Language="SQL Server" Kind="SQL Server"><![CDATA[if (object_id('$schema$.$procedure_name$') is not null)
 	drop procedure $schema$.$procedure_name$
@@ -45,7 +49,9 @@ begin
 	return 0; 
 end
 go
-]]></Code>
+
+grant execute on $schema$.$procedure_name$ to $role$
+go]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>
