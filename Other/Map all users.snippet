@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Map all users</Title>
+      <Shortcut>MapAllUsers</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[declare @Script nvarchar(max);
+
+set @Script = (select 'exec sp_change_users_login ''Update_One'', ''' + su.name + ''', ''' + su.name + '''' + char(10)
+                 from sysusers su
+                where su.issqluser = 1
+                  and su.[sid] is not null
+                  and su.[sid] not in (0x01, 0x00)
+                  for xml path(''));
+--select @Script
+
+exec (@Script);]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
