@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>GrantAllPermissionsApi</Title>
+      <Shortcut>GrantAllPermissionsApi</Shortcut>
+      <Description />
+      <Author>Devart</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>TENANT_ID</ID>
+        </Literal>
+      </Declarations>
+      <Code Language="SQL Server" Kind="SQL Server"><![CDATA[-- exec SYSTEM.Initialize;
+-- exec TEST.TenantTemplate01Initialize;
+declare @pTenantID smallint = $TENANT_ID$
+      , @pRoleID   smallint = null;
+
+begin try
+    begin tran
+    delete from ADM.RolePermissionApi
+     where (TenantID = @pTenantID or @pTenantID is null) 
+       and (RoleID = @pRoleID or @pRoleID is null);
+    insert into ADM.RolePermissionApi (TenantID, RoleID, PermissionApiID, CreatedBy, Created)
+         select r.TenantID
+              , r.ID
+              , pa.ID
+              , 1
+              , getutcdate()
+           from ADM.[Role] r
+    cross apply ADM.PermissionApi pa
+          where (r.TenantID = @pTenantID or @pTenantID is null)
+            and (r.ID = @pRoleID or @pRoleID is null)
+            and r.Deleted is null;
+
+    commit tran;
+end try
+begin catch
+    rollback tran;
+    throw;
+end catch;
+
+exec ADM.PermissionApiCacheReload @pTenantID = @pTenantID
+                                , @pDataJson = null;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
