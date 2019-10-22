@@ -44,6 +44,7 @@ as set nocount                 on
    set concat_null_yields_null on
    set implicit_transactions   off
    set cursor_close_on_commit  off
+   set transaction isolation level read committed
 begin
 	$CARET$
 	return 0; 
